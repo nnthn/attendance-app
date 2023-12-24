@@ -1,0 +1,13 @@
+.Navbar{
+    background-color: 	#aad6ec;
+    display:flex;
+    padding:10px;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 4rem;
+    
+}
+input{
+    width: 20rem;
+  margin-left: initial;
+}

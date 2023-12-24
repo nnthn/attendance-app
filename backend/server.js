@@ -2,8 +2,11 @@ const express = require('express');
 const bodyParser =require('body-parser');
 const cors = require('cors');
 const mysql= require('mysql2');
+const bcrypt - require('bcrypt');
+const jwt = require('jsonwebtoken');
 const app = express();
 const port= 3000;
+require('dotenv').config();
 
 //Configure middleware;
 app.use(bodyParser.json());
@@ -11,11 +14,24 @@ app.use(cors());
 
 //Configure MySql conncection;
 const db = mysql.createConnection({
-    host:'localhost',
-    user:'nnthn',
-    password:'nnthn',
-    database:'attendancedb',
+    host:process.env.DB_HOST,
+    user:process.env.DB_USER,
+    password:process.env.DB_PASS,
+    database:process.env.DB_NAME,
+    connectionLimit: 10,
+    queueLimit: 0
 });
+
+
+
+//connection management
+db.on('error',funciotn(err){
+    if(err.code === 'PROTOCOL_CONNECTION_LOST'){
+	alert("connection not done");
+    }else{
+	throw err;
+    }
+})
 
 db.connect((err)=>{
     if(err){
@@ -71,7 +87,7 @@ app.post('/markAttendance', (req, res) => {
   if (!studentId) {
     return res.status(400).json({ error: 'Student ID is required' });
   }
-  // Get today's date
+ // today's date
   const today = new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
 
   const query = 'INSERT INTO attendance (studentId, date, present) VALUES (?, ?, ?)';
@@ -84,6 +100,77 @@ app.post('/markAttendance', (req, res) => {
   });
 });
 
+
+// Signup Endpoint
+app.post('/signup', async (req, res) => {
+  const { username, password } = req.body;
+  
+  // Hash password
+  const hashedPassword = await bcrypt.hash(password, 10);
+  
+  // Store username and hashedPassword in database
+    // ...
+    const query = 'INSERT INTO users(userName,password) VALUES(?,?)';
+    db.query(query,[username,hashedPassword] (err,result)=>{
+	if(err){
+	    console.error('Error adding user:',err);
+	    return res.status(500).json({error: 'Error creating user'});
+	}
+    });
+
+  res.status(201).send('User created successfully');
+});
+
+// Login Endpoint
+app.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+
+  // Retrieve user from database
+    const query='SELECT * FROM users WHERE userName=?';
+    db.query(query,[username], async (err,result)=>{
+	if(err){
+	    console.err('Error retrieving user:',err);
+	    return res.status(500).json({error:'Error retrieving the user:'});
+	   
+	}
+	if(result.length===0){
+	    return res.status(401).json({error:'Invalid credentials:'});
+	}
+	const user= result[0]l;
+    });
+  // Check if user exists and password is correct
+  const validPassword = await bcrypt.compare(password, user.password);
+  
+  if (!validPassword) return res.status(401).send('Invalid credentials');
+
+  // Create token
+  const token = jwt.sign(
+    { userId: user.id }, // Payload
+    process.env.JWT_SECRET_KEY, // Secret key from .env file
+    { expiresIn: '24h' } // Token expiration time
+  );
+
+  res.json({ accessToken: token });
+});
+
+// Middleware to authenticate token
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    
+    if (!token) return res.sendStatus(401);
+    
+    jwt.verify(token, process.env.JWT_SECRET_KEY, (err, user) => {
+        if (err) return res.sendStatus(403);
+        req.user = user;
+        next();
+    });
+}
+
+// A protected route example 
+app.get('/protected-route', authenticateToken, (req,res)=>{
+    res.send(`Welcome! You're authenticated.`);
+});
 
 //start the server
 app.listen(port,() =>{
