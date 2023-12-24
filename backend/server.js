@@ -2,12 +2,12 @@ const express = require('express');
 const bodyParser =require('body-parser');
 const cors = require('cors');
 const mysql= require('mysql2');
-const bcrypt - require('bcrypt');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const app = express();
 const port= 3000;
 require('dotenv').config();
-
+app.use(express.json());
 //Configure middleware;
 app.use(bodyParser.json());
 app.use(cors());
@@ -25,13 +25,13 @@ const db = mysql.createConnection({
 
 
 //connection management
-db.on('error',funciotn(err){
+db.on('error',function(err){
     if(err.code === 'PROTOCOL_CONNECTION_LOST'){
 	alert("connection not done");
     }else{
 	throw err;
     }
-})
+});
 
 db.connect((err)=>{
     if(err){
@@ -45,6 +45,7 @@ db.connect((err)=>{
 //admin
 //Create API route for attendance management
 app.post('/addStudent',(req,res)=>{
+    
     //implement code to add a new student to the database
     const  {firstName,lastName,branch} =req.body;
 
@@ -68,6 +69,8 @@ app.post('/addStudent',(req,res)=>{
 //Add routes for searching and marking attendance
 //route to retrieve a list of student for UI
 app.get('/students',(req,res) =>{
+    console.log(req.body);
+
     ///implement a code to retreeive and send a list of students from the database
     const query ='SELECT * FROM students';
     db.query(query,(err,results)=>{
@@ -111,7 +114,7 @@ app.post('/signup', async (req, res) => {
   // Store username and hashedPassword in database
     // ...
     const query = 'INSERT INTO users(userName,password) VALUES(?,?)';
-    db.query(query,[username,hashedPassword] (err,result)=>{
+    db.query(query,[username,password], (err,result)=>{
 	if(err){
 	    console.error('Error adding user:',err);
 	    return res.status(500).json({error: 'Error creating user'});
@@ -123,11 +126,13 @@ app.post('/signup', async (req, res) => {
 
 // Login Endpoint
 app.post('/login', async (req, res) => {
+   
   const { username, password } = req.body;
-
+  
   // Retrieve user from database
     const query='SELECT * FROM users WHERE userName=?';
     db.query(query,[username], async (err,result)=>{
+	console.log("result ",result.length);
 	if(err){
 	    console.err('Error retrieving user:',err);
 	    return res.status(500).json({error:'Error retrieving the user:'});
@@ -136,21 +141,24 @@ app.post('/login', async (req, res) => {
 	if(result.length===0){
 	    return res.status(401).json({error:'Invalid credentials:'});
 	}
-	const user= result[0]l;
-    });
+	
+
+    const user= result[0];
   // Check if user exists and password is correct
-  const validPassword = await bcrypt.compare(password, user.password);
+ // const validPassword = await bcrypt.compare(password, user.password);
   
-  if (!validPassword) return res.status(401).send('Invalid credentials');
+	if (user.password!=password) return res.status(401).send('Invalid credentials: password wronng');
 
   // Create token
-  const token = jwt.sign(
-    { userId: user.id }, // Payload
+	const token = jwt.sign(
+   { userId: user.id }, // Payload
     process.env.JWT_SECRET_KEY, // Secret key from .env file
     { expiresIn: '24h' } // Token expiration time
   );
 
-  res.json({ accessToken: token });
+	res.json({ accessToken: token });
+	
+    });
 });
 
 // Middleware to authenticate token
