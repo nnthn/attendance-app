@@ -1,4 +1,0 @@
-DB_HOST=localhost
-DB_USER=nnthn
-DB_PASS=nnthn
-DB_NAME=attendancedb
