@@ -5,7 +5,7 @@ const mysql= require('mysql2');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const app = express();
-const port= 3000;
+const port= 3001;
 require('dotenv').config();
 app.use(express.json());
 //Configure middleware;
@@ -86,20 +86,43 @@ app.get('/students',(req,res) =>{
 //route for students to mark attendance
 app.post('/markAttendance', (req, res) => {
   // Implement code to mark attendance for a student on the current date
-  const { studentId, present } = req.body;
-  if (!studentId) {
-    return res.status(400).json({ error: 'Student ID is required' });
-  }
- // today's date
-  const today = new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
+    const { studentId, present } = req.body;
+    const selectQuery = 'SELECT * FROM attendance WHERE studentId=?';
+    db.query(selectQuery,[studentId], async(err,result)=>{
 
-  const query = 'INSERT INTO attendance (studentId, date, present) VALUES (?, ?, ?)';
-  db.query(query, [studentId, today, present], (err, result) => {
-    if (err) {
-      console.error('Error marking attendance: ' + err);
-      return res.status(500).json({ error: 'Error marking attendance' });
-    }
-    res.status(201).json({ message: 'Attendance marked successfully' });
+	const user =result[0];
+	
+	
+	if (!studentId) {
+	    return res.status(400).json({ error: 'Student ID is required' });
+	}
+	// today's date
+	const today = new Date().toISOString().split('T')[0];
+
+	if(!(result.length ===0)){
+	    const ltoday = new Date().toLocaleString().split(',')[0];
+	    const dateindb = user.date.toLocaleString().split(',')[0];
+	    if(dateindb === ltoday){
+		const query1 = 'UPDATE attendance SET present = ? WHERE studentId=?';
+		db.query(query1, [present,studentId], (err, result) => {
+		    if (err) {
+			console.error('Error marking attendance1: ' + err);
+			return res.status(500).json({ error: 'Error marking attendance1' });
+		    }
+		    res.status(201).json({ message: 'Attendance marked successfully1' });
+		}); 
+	    }
+	}
+	else{
+	    const query = 'INSERT INTO attendance (studentId, date, present) VALUES (?, ?, ?)';
+	    db.query(query, [studentId, today, present], (err, result) => {
+		if (err) {
+		    console.error('Error marking attendance: ' + err);
+		    return res.status(500).json({ error: 'Error marking attendance' });
+		}
+		res.status(201).json({ message: 'Attendance marked successfully' });
+	    });
+	}
   });
 });
 
@@ -107,6 +130,7 @@ app.post('/markAttendance', (req, res) => {
 // Signup Endpoint
 app.post('/signup', async (req, res) => {
   const { username, password } = req.body;
+
   
   // Hash password
   const hashedPassword = await bcrypt.hash(password, 10);
