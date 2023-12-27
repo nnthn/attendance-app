@@ -1,13 +1,93 @@
+/* Orange color for light color scheme (Default) */
+/* Can be forced with data-theme="light" */
+[data-theme=light],
+:root:not([data-theme=dark]) {
+  --pico-text-selection-color: rgba(244, 93, 44, 0.25);
+  --pico-primary: #bd3c13;
+  --pico-primary-background: #d24317;
+  --pico-primary-underline: rgba(189, 60, 19, 0.5);
+  --pico-primary-hover: #942d0d;
+  --pico-primary-hover-background: #bd3c13;
+  --pico-primary-focus: rgba(244, 93, 44, 0.25);
+  --pico-primary-inverse: #fff;
+}
+
+
+body{
+    background-color: #191919;
+    height:100vh;
+}
 .Navbar{
-    background-color: 	#aad6ec;
     display:flex;
-    padding:10px;
-    align-items:center;
+    padding-top:2rem;
+    padding-right:3rem;
     justify-content:space-between;
-    padding:0 4rem;
+    align-items:center;
+
+}
+.Navbar img{
+    
+    width:3rem;
+    height:3rem;
+    margin:0 .8rem 0 3rem;
     
 }
-input{
-    width: 20rem;
-  margin-left: initial;
+.logogrp{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+}
+.logogrp h2{
+
+    font-size:1.4rem;
+}
+.Navbar h3{
+    font-size:.9rem;
+}
+
+.Body{
+    height:80vh;
+    margin-left:6.8rem;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    
+}
+.Body h2{
+    width:25rem;
+}
+.Body h4{
+    font-size:1rem;
+    font-weight:normal;
+    
+}
+:root{
+    
+    background-color: #191919;
+}
+.login-body{
+
+    background-color:#191919;
+    border:0;
+    font-weight:bold;
+    padding:0 2rem 0 0;
+    margin-top:1rem;
+    --pico-primary-focus: none;
+}
+.siginin-body{
+    border-radius: 3rem !important;
+    color: #191919;
+    font-weight: bold;
+    width: 7rem;
+
+}
+.Bodycontainer {
+    display:flex;
+    justify-content:space-between;
+}
+.Bodycontainer img{
+    width: 20vw;
+    margin-right:10vw;
+    margin-top:10vh;
 }

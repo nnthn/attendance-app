@@ -1,13 +1,17 @@
-import logo from './logo.svg';
-import Body from './components/Body.jsx';
-import Nav from './components/Nav.jsx';
+import React from 'react';
+
+import Students from './components/Students.jsx';
+import {BrowserRouter,Route,Routes,Link,Redirect} from "react-router-dom";
+import Home from './Home';
 
 function App() {
-  return (
-      <div>
-        <Nav />
-        <Body />
-      </div>
+    return (
+        <BrowserRouter>
+          <Routes>
+            <Route path ='/students'  element={<Students/>} />
+            <Route path = '/' element={<Home/>} index={true}/>
+          </Routes>
+        </BrowserRouter>
   );
 }
 
