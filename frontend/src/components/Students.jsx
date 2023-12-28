@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react';
-
+import "./students.css";
 export default function Students(){
     const [students, setStudents] = useState([]);
     //use useEffect() to fetch data
@@ -41,23 +41,32 @@ export default function Students(){
   };
 
     return (
-        <div className="studentscontainer">
-          { students.map((student)=>(
-              <div key={student.id} className="attendance-card">
-                <h3>{student.firstName} {student.lastName}</h3>
-                <p>Branch: {student.branch}</p>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={student.present}
-                    onChange={()=>handleCheckboxChange(student.id)}
-                  />{' '}
-                  present
-                </label>
-                <button  onClick={()=>handleAttendance(student.id,student.present)}>Submit</button>
-              </div>  
-          ))}
+        <div className="studentsContainer">
           
+          
+          <div className="studentscard">
+            { students.map((student)=>(
+                <div key={student.id} className="attendance-card">
+                  <div className="text">
+                    <h3>{student.firstName} {student.lastName}</h3>
+
+                  </div>
+                  <div className="markattendance">
+                    <p>Branch: {student.branch}</p>                  
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={student.present}
+                        onChange={()=>handleCheckboxChange(student.id)}
+                      />{' '}
+                      present
+                    </label>
+                    <button  onClick={()=>handleAttendance(student.id,student.present)}>Submit</button>
+                  </div>
+                </div>  
+            ))}
+            
+          </div>
         </div>
     );
 }
