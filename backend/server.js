@@ -69,7 +69,7 @@ app.post('/addStudent',(req,res)=>{
 //Add routes for searching and marking attendance
 //route to retrieve a list of student for UI
 app.get('/students',(req,res) =>{
-    console.log(req.body);
+    
 
     ///implement a code to retreeive and send a list of students from the database
     const query ='SELECT * FROM students';
@@ -87,7 +87,8 @@ app.get('/students',(req,res) =>{
 app.post('/markAttendance', (req, res) => {
   // Implement code to mark attendance for a student on the current date
     const { studentId, present } = req.body;
-    const selectQuery = 'SELECT * FROM attendance WHERE studentId=?';
+    const selectQuery = `SELECT a.* FROM attendance a JOIN (SELECT studentId, MAX(date) AS latest_date FROM attendance WHERE studentId = ? GROUP BY studentId) b ON a.studentId = b.studentId AND a.date = b.latest_date;
+`;
     db.query(selectQuery,[studentId], async(err,result)=>{
 
 	const user =result[0];
@@ -100,11 +101,14 @@ app.post('/markAttendance', (req, res) => {
 	const today = new Date().toISOString().split('T')[0];
 
 	if(!(result.length ===0)){
+	
 	    const ltoday = new Date().toLocaleString().split(',')[0];
 	    const dateindb = user.date.toLocaleString().split(',')[0];
+	    console.log(dateindb);
+	    console.log(today);
 	    if(dateindb === ltoday){
-		const query1 = 'UPDATE attendance SET present = ? WHERE studentId=?';
-		db.query(query1, [present,studentId], (err, result) => {
+		const query1 = 'UPDATE attendance SET present = ? WHERE studentId=? AND date=?';
+		db.query(query1, [present,studentId,today], (err, result) => {
 		    if (err) {
 			console.error('Error marking attendance1: ' + err);
 			return res.status(500).json({ error: 'Error marking attendance1' });
@@ -112,8 +116,21 @@ app.post('/markAttendance', (req, res) => {
 		    res.status(201).json({ message: 'Attendance marked successfully1' });
 		}); 
 	    }
+	    else{
+	  
+	    const query = 'INSERT INTO attendance (studentId, date, present) VALUES (?, ?, ?)';
+	    db.query(query, [studentId, today, present], (err, result) => {
+		if (err) {
+		    console.error('Error marking attendance: ' + err);
+		    return res.status(500).json({ error: 'Error marking attendance' });
+		}
+		res.status(201).json({ message: 'Attendance marked successfully' });
+	    });
 	}
+	}
+	
 	else{
+	  
 	    const query = 'INSERT INTO attendance (studentId, date, present) VALUES (?, ?, ?)';
 	    db.query(query, [studentId, today, present], (err, result) => {
 		if (err) {
