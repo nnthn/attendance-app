@@ -1,0 +1,65 @@
+.Siginin{
+  background: radial-gradient( #232323,#1D1D1D);
+  padding: 1rem;
+  margin: 2rem;
+  width: 90vw;
+  display: flex;
+  flex-direction:column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  border: .1rem solid #3A3439;
+}
+.attendance-card{
+    display:flex;
+    margin: 1rem 5rem 1rem 5rem;
+    background-color: #323232;
+    border-radius: 3rem;
+    align-items: center;
+    justify-content:space-between;
+    height: 3.5rem;
+    width: 80vw;
+    
+}
+.text{
+    display:flex;
+    margin-left:2rem;
+    width:30%;
+    justify-content:left;
+    align-items:center;
+    
+}
+.text h3{
+    font-size:1.2rem;
+    
+}
+.markattendance p{
+    width:40%;
+    margin-left:2rem;
+    font-size:0.9rem;
+    font-weigth:bold;
+}
+.markattendance label{
+ font-size:0.9rem;
+}
+
+.markattendance{
+    display:flex;
+    align-items:center;
+    width: 70%;
+    justify-content: space-between;
+    margin-right: 2rem;
+
+}
+h3,p,label,button{
+    margin:0;
+}
+button{
+    width: 5rem;
+  height: 2rem;
+  font-size: 0.8rem;
+  font-weight: bold;
+  padding: 0;
+  border-radius: 3rem;
+
+}

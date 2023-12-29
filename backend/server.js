@@ -146,6 +146,7 @@ app.post('/markAttendance', (req, res) => {
 
 // Signup Endpoint
 app.post('/signup', async (req, res) => {
+    console.log(req.body);
   const { username, password } = req.body;
 
   
@@ -222,6 +223,6 @@ app.get('/protected-route', authenticateToken, (req,res)=>{
 });
 
 //start the server
-app.listen(port,() =>{
-    console.log(`Server is runnting on port ${port}`);
+app.listen(port,'0.0.0.0',() =>{
+    console.log(`Server is runnting on http://0.0.0.0:${port}`);
 });
