@@ -39,7 +39,8 @@ export default function Signin(){
     return (
         <div className="Signincontainer">
           <div className="Siginin">
-            <div className="text">
+            <div className="textcontainer">
+              <h2>attendify</h2>
               <input
                 type="text"
                 placeholder="UserName"
@@ -58,7 +59,7 @@ export default function Signin(){
               />
             </div>
             <div className="buttons">
-              <button className="outline secondary" disabled>LOG IN</button>
+              <button className="outline secondary" >LOG IN</button>
               <button onClick={handleSubmit}>SIGN IN</button>
             </div>
           </div>
