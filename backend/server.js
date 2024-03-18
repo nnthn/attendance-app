@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser =require('body-parser');
+const path = require('path'); 
 const cors = require('cors');
 const mysql= require('mysql2');
 const bcrypt = require('bcrypt');
@@ -11,7 +12,7 @@ app.use(express.json());
 //Configure middleware;
 app.use(bodyParser.json());
 app.use(cors());
-
+app.use(express.static(path.join(__dirname, 'build')));
 //Configure MySql conncection;
 const db = mysql.createConnection({
     host:process.env.DB_HOST,
