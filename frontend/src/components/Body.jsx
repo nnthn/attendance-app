@@ -6,8 +6,8 @@ export default function Home(){
     return(
         <div className="Bodycontainer">
           <div className="Body">
-            <h2>Student attendance marking made easy</h2>
-            <h4>today's session: html</h4>
+            <h2>Student Result Activity Analysis System</h2>
+          
             <div className="sinup" >
               <button className="login-body">LOGIN</button>
               <Link className="siginin" to="/siginin"><button className="siginin-body">SIGN IN</button></Link>

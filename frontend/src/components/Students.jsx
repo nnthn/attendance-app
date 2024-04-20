@@ -1,72 +1,22 @@
-import React,{useState,useEffect} from 'react';
-import "./students.css";
-export default function Students(){
-    const [students, setStudents] = useState([]);
-    //use useEffect() to fetch data
-    useEffect(()=>{
-        //fetch the student from the server
-        fetch('http://localhost:3001/students')
-            .then((response)=>response.json())
-            .then((data)=>setStudents(data.map((student)=>({
-                ...student,
-                present:false,
-            }))))
-            .catch((error)=>console.error('Error while fetcheing',error));
-        
-    },[]);
-    
-    
-    const  handleCheckboxChange =(id)=>{
-        setStudents((prevStudents)=>
-            prevStudents.map((student)=>
-                student.id === id?{...student, present: !student.present}: student
-            )
-        );
-    };
-    
-    const handleAttendance = (studentId,present) => {
-    // Implement logic to mark attendance in the backend API
-    const data = { studentId, present };
+import React, { useState } from 'react';
+import StudentsList from './StudentsList';
+import StudentDetails from './StudentDetails'; // Import the new component
+import './students.css';
 
-    fetch('http://localhost:3001/markAttendance', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    })
-      .then((response) => response.json())
-      .then((result) => console.log('Attendance marked successfully:', result))
-      .catch((error) => console.error('Error marking attendance:', error));
-  };
+export default function Students() {
+    const [selectedStudent, setSelectedStudent] = useState(null); // State to hold the selected student
+
+    // Function to handle click on list item
+    const handleListItemClick = (student) => {
+        setSelectedStudent(student); // Set the selected student
+    };
 
     return (
-        <div className="studentsContainer">
-          
-          
-          <div className="studentscard">
-            { students.map((student)=>(
-                <div key={student.id} className="attendance-card">
-                  <div className="text">
-                    <h3>{student.firstName} {student.lastName}</h3>
-
-                  </div>
-                  <div className="markattendance">
-                    <p>Branch: {student.branch}</p>                  
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={student.present}
-                        onChange={()=>handleCheckboxChange(student.id)}
-                      />{' '}
-                      present
-                    </label>
-                    <button  onClick={()=>handleAttendance(student.id,student.present)}>Submit</button>
-                  </div>
-                </div>  
-            ))}
-            
+        <>
+          <div className="studentslist-container">
+            <StudentsList onItemClick={handleListItemClick} /> {/* Pass the function as a prop */}{selectedStudent && <StudentDetails student={selectedStudent} />} {/* Render the selected student details */}
           </div>
-        </div>
+          
+        </>
     );
 }

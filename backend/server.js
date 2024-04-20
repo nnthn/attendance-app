@@ -88,7 +88,7 @@ app.get('/students',(req,res) =>{
 app.post('/markAttendance', (req, res) => {
   // Implement code to mark attendance for a student on the current date
     const { studentId, present } = req.body;
-    const selectQuery = `SELECT a.* FROM attendance a JOIN (SELECT studentId, MAX(date) AS latest_date FROM attendance WHERE studentId = ? GROUP BY studentId) b ON a.studentId = b.studentId AND a.date = b.latest_date;
+    const selectQuery = `SELECT a.* FROM studentState a JOIN (SELECT studentId, MAX(date) AS latest_date FROM studentState WHERE studentId = ? GROUP BY studentId) b ON a.studentId = b.studentId AND a.date = b.latest_date;
 `;
     db.query(selectQuery,[studentId], async(err,result)=>{
 
@@ -108,7 +108,7 @@ app.post('/markAttendance', (req, res) => {
 	    console.log(dateindb);
 	    console.log(today);
 	    if(dateindb === ltoday){
-		const query1 = 'UPDATE attendance SET present = ? WHERE studentId=? AND date=?';
+		const query1 = 'UPDATE studentState SET present = ? WHERE studentId=? AND date=?';
 		db.query(query1, [present,studentId,today], (err, result) => {
 		    if (err) {
 			console.error('Error marking attendance1: ' + err);
@@ -119,7 +119,7 @@ app.post('/markAttendance', (req, res) => {
 	    }
 	    else{
 	  
-	    const query = 'INSERT INTO attendance (studentId, date, present) VALUES (?, ?, ?)';
+	    const query = 'INSERT INTO studentState (studentId, date, present) VALUES (?, ?, ?)';
 	    db.query(query, [studentId, today, present], (err, result) => {
 		if (err) {
 		    console.error('Error marking attendance: ' + err);
@@ -132,7 +132,7 @@ app.post('/markAttendance', (req, res) => {
 	
 	else{
 	  
-	    const query = 'INSERT INTO attendance (studentId, date, present) VALUES (?, ?, ?)';
+	    const query = 'INSERT INTO studentState (studentId, date, present) VALUES (?, ?, ?)';
 	    db.query(query, [studentId, today, present], (err, result) => {
 		if (err) {
 		    console.error('Error marking attendance: ' + err);
@@ -203,6 +203,47 @@ app.post('/login', async (req, res) => {
 	
     });
 });
+//addmarks1
+app.post('/addmarks1', (req, res) => {
+    const { studentId, subject, totalMark, co1, co2 } = req.body;
+
+    const query = 'INSERT INTO test1 (studentId, subject, totalMark, co1, co2) VALUES (?, ?, ?, ?, ?)';
+    db.query(query, [studentId, subject, totalMark, co1, co2], (err, result) => {
+        if (err) {
+            console.error('Error inserting marks into test1:', err);
+            return res.status(500).json({ error: 'Error inserting marks into test1' });
+        }
+        res.status(201).json({ message: 'Marks added successfully to test1' });
+    });
+});
+//marks2
+//addmarks1
+app.post('/addmarks1', (req, res) => {
+    const { studentId, subject, totalMark, co1, co2 } = req.body;
+
+    const query = 'INSERT INTO test1 (studentId, subject, totalMark, co1, co2) VALUES (?, ?, ?, ?, ?)';
+    db.query(query, [studentId, subject, totalMark, co1, co2], (err, result) => {
+        if (err) {
+            console.error('Error inserting marks into test1:', err);
+            return res.status(500).json({ error: 'Error inserting marks into test1' });
+        }
+        res.status(201).json({ message: 'Marks added successfully to test1' });
+    });
+});
+//marks2
+app.post('/addmarks2', (req, res) => {
+    const { studentId, subject, totalMark, co3, co4 } = req.body;
+
+    const query = 'INSERT INTO test2 (studentId, subject, totalMark, co3, co4) VALUES (?, ?, ?, ?, ?)';
+    db.query(query, [studentId, subject, totalMark, co3, co4], (err, result) => {
+        if (err) {
+            console.error('Error inserting marks into test1:', err);
+            return res.status(500).json({ error: 'Error inserting marks into test1' });
+        }
+        res.status(201).json({ message: 'Marks added successfully to test1' });
+    });
+});
+
 
 // Middleware to authenticate token
 function authenticateToken(req, res, next) {
