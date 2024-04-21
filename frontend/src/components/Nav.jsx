@@ -11,7 +11,6 @@ export default function Nav() {
         <img src={logoimg} alt="logo of attendify" />
         <h2 className="attendify">SRAAS</h2>
       </div>
-      <h3><Link to="/students">Students</Link></h3>
     </div>
   );
 }

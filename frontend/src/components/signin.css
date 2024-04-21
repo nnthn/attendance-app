@@ -33,6 +33,9 @@
 .buttons{
     display: flex;
     margin-top:2rem;
-    justify-content: space-between;
+    justify-content: center;
     width: 11rem;
+}
+.student-form{
+    padding: 2rem;
 }

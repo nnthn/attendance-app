@@ -1,3 +1,15 @@
+[data-theme=light],
+:root:not([data-theme=dark]) {
+  --pico-text-selection-color: rgba(244, 93, 44, 0.25);
+  --pico-primary: #bd3c13;
+  --pico-primary-background: #d24317;
+  --pico-primary-underline: rgba(189, 60, 19, 0.5);
+  --pico-primary-hover: #942d0d;
+  --pico-primary-hover-background: #bd3c13;
+  --pico-primary-focus: rgba(244, 93, 44, 0.25);
+  --pico-primary-inverse: #fff;
+}
+
 .App {
   text-align: center;
 }
@@ -35,4 +47,27 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.student-login{
+    padding: 1rem;
+}
+.add-details{
+    display: flex;
+    justify-content: space-around;
+}
+.academic-container{
+    display: flex;
+    flex-direction: column;
+
+}
+.student-details-container{
+    display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+  height: 71vh;
+
+}
+.logout-container{
+padding: 1rem;
 }

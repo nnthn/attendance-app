@@ -1,0 +1,68 @@
+import React, { useState } from 'react';
+
+const AddStudentForm = () => {
+    const [formData, setFormData] = useState({
+        firstName: '',
+        lastName: '',
+        branch: '',
+        email: '',
+        semister: '',
+        phoneNumber: '',
+        address: ''
+    });
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await fetch('http://localhost:3001/addStudent', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (response.ok) {
+                console.log('Student added successfully!');
+                // Clear form fields after successful submission
+                setFormData({
+                    firstName: '',
+                    lastName: '',
+                    branch: '',
+                    email: '',
+                    semister: '',
+                    phoneNumber: '',
+                    address: ''
+                });
+                console.log(formData);
+            } else {
+                console.error('Failed to add student.');
+            }
+        } catch (error) {
+            console.error('Error adding student:', error);
+        }
+    };
+
+    return (
+        <div>
+            <h2>Add Student</h2>
+            <form onSubmit={handleSubmit} className="student-form">
+                <input type="text" name="firstName" placeholder="First Name" value={formData.firstName} onChange={handleInputChange} />
+                <input type="text" name="lastName" placeholder="Last Name" value={formData.lastName} onChange={handleInputChange} />
+                <input type="text" name="branch" placeholder="Branch" value={formData.branch} onChange={handleInputChange} />
+                <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleInputChange} />
+                <input type="number" name="semister" placeholder="Semister" value={formData.semister} onChange={handleInputChange} />
+                <input type="tel" name="phoneNumber" placeholder="Phone Number" value={formData.phoneNumber} onChange={handleInputChange} />
+                <input type="text" name="address" placeholder="Address" value={formData.address} onChange={handleInputChange} />
+                <button type="submit">Add Student</button>
+            </form>
+        </div>
+    );
+};
+
+export default AddStudentForm;

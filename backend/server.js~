@@ -1,22 +1,34 @@
 const express = require('express');
-const bodyParser =require('body-parser');
+const bodyParser = require('body-parser');
 const cors = require('cors');
-const mysql= require('mysql2');
+const mysql = require('mysql2');
+const jwt = require('jsonwebtoken');
+const path =require('path');
 const app = express();
-const port= 3000;
-
-//Configure middleware;
+const port = 3001;
+require('dotenv').config();
+app.use(express.json());
 app.use(bodyParser.json());
 app.use(cors());
+app.use(express.static(path.join(__dirname, 'build')));
 
 //Configure MySql conncection;
 const db = mysql.createConnection({
-    host:'localhost',
-    user:'nnthn',
-    password:'nnthn',
-    database:'attendancedb',
+    host:process.env.DB_HOST,
+    user:process.env.DB_USER,
+    password:process.env.DB_PASS,
+    database:process.env.DB_NAME,
+    connectionLimit: 10,
+    queueLimit: 0
 });
-
+//connection management
+db.on('error',function(err){
+    if(err.code === 'PROTOCOL_CONNECTION_LOST'){
+	alert("connection not done");
+    }else{
+	throw err;
+    }
+});
 db.connect((err)=>{
     if(err){
 	console.error("Database connection error: "+err);
@@ -26,64 +38,308 @@ db.connect((err)=>{
 
 });
 
+
+// Middleware to authenticate token
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) return res.sendStatus(401);
+
+    jwt.verify(token, process.env.JWT_SECRET_KEY, (err, user) => {
+        if (err) return res.sendStatus(403);
+        req.user = user;
+        next();
+    });
+}
+
+// Route to fetch user details
+app.get('/user/details', authenticateToken, (req, res) => {
+    const { userId } = req.user;
+    const query = 'SELECT username, password FROM users WHERE id = ?';
+    db.query(query, [userId], (err, result) => {
+        if (err) {
+            console.error('Error retrieving user details:', err);
+            return res.status(500).json({ error: 'Error retrieving user details' });
+        }
+        if (result.length === 0) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        const { username, password } = result[0];
+        res.json({ username, password });
+    });
+});
+
 //admin
 //Create API route for attendance management
-app.post('/addStudent',(req,res)=>{
-    //implement code to add a new student to the database
-    const  {firstName,lastName,branch} =req.body;
-
-    if(!firstName || !lastName || !branch){
-	return res.status(400).json({error: 'All fields are required'});
+app.post('/addStudent', async (req, res) => {
+    // Extract student details from request body
+    const { firstName, lastName, branch, email, semister, phoneNumber, address } = req.body;
+    // Validate request body
+    if (!firstName || !lastName || !branch) {
+        return res.status(400).json({ error: 'All fields are required' });
     }
 
-    const query ='INSERT INTO students (firstName,lastName,branch) VALUES (?,?,?)';
-    db.query(query,[firstName, lastName, branch],(err,result)=>{
-	if(err){
-	    console.error('Error adding students: '+err);
-	    return res.status(500).json({error: 'Error adding students'});
-	}
+    try {
+        // Insert student into students table
+        const insertStudentQuery = 'INSERT INTO students (firstName, lastName, branch, email, semister, phoneNumber, address) VALUES (?, ?, ?, ?, ?, ?, ?)';
+        const studentResult = await db.promise().query(insertStudentQuery, [firstName, lastName, branch, email, semister, phoneNumber, address]);
+        const studentId = studentResult[0].insertId;
 
-	//student added successfully
-	res.status(201).json({message:'Student added successfully'});
-    });
+        // Insert student as user into users table with default admin role 0
+        const insertUserQuery = 'INSERT INTO users (userName, password, adminRole) VALUES (?, ?, ?)';
+        const userResult = await db.promise().query(insertUserQuery, [firstName, lastName, 0]);
+        res.status(201).json({ message: 'Student added successfully', studentId });
+    } catch (error) {
+        console.error('Error adding student:', error);
+        res.status(500).json({ error: 'Error adding student' });
+    }
 });
-
 //Add routes for searching and marking attendance
-//route to retrieve a list of student for UI
-app.get('/students',(req,res) =>{
-    ///implement a code to retreeive and send a list of students from the database
-    const query ='SELECT * FROM students';
-    db.query(query,(err,results)=>{
-	if(err){
-	    console.error('Error while fetching students: '+err);
-	    return res.status(500).json({error:'Error while fetching students'});
-	}
-	res.status(200).json(results);
+// Endpoint to retrieve verified students
+app.get('/nonverifiedstudents', (req, res) => {
+    const query = `
+        SELECT students.*
+        FROM students
+        INNER JOIN verification ON students.id = verification.studentId
+        WHERE verification.verified = 1
+    `;
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error while fetching verified students: ' + err);
+            return res.status(500).json({ error: 'Error while fetching verified students' });
+        }
+        res.status(200).json(results);
     });
 });
+// Endpoint to retrieve verified students
+app.get('/verifiedstudents', (req, res) => {
+    const query = `
+        SELECT students.*
+        FROM students
+        LEFT JOIN verification ON students.id = verification.studentId
+        WHERE verification.studentId IS NULL OR verification.verified = 0
+    `;
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error while fetching non-verified students: ' + err);
+            return res.status(500).json({ error: 'Error while fetching non-verified students' });
+        }
+        res.status(200).json(results);
+    });
+});
+//mark verification
+// Route for updating student verification status
+app.post('/verification', (req, res) => {
+    const { studentId, verified } = req.body;
 
+    // Validate request body
+    if (!studentId || !verified) {
+        return res.status(400).json({ error: 'Student ID and verification status are required' });
+    }
+
+    // Update verification status in the database
+    const query = 'INSERT INTO verification (studentId, verified) VALUES (?, ?) ON DUPLICATE KEY UPDATE verified = VALUES(verified)';
+    db.query(query, [studentId, verified], (err, result) => {
+        if (err) {
+            console.error('Error updating verification status:', err);
+            return res.status(500).json({ error: 'Error updating verification status' });
+        }
+        res.status(200).json({ message: 'Verification status updated successfully' });
+    });
+});
 //route for students to mark attendance
 app.post('/markAttendance', (req, res) => {
   // Implement code to mark attendance for a student on the current date
-  const { studentId, present } = req.body;
-  if (!studentId) {
-    return res.status(400).json({ error: 'Student ID is required' });
-  }
-  // Get today's date
-  const today = new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
+    const { studentId, present } = req.body;
+    const selectQuery = `SELECT a.* FROM studentState a JOIN (SELECT studentId, MAX(date) AS latest_date FROM studentState WHERE studentId = ? GROUP BY studentId) b ON a.studentId = b.studentId AND a.date = b.latest_date;
+`;
+    db.query(selectQuery,[studentId], async(err,result)=>{
 
-  const query = 'INSERT INTO attendance (studentId, date, present) VALUES (?, ?, ?)';
-  db.query(query, [studentId, today, present], (err, result) => {
-    if (err) {
-      console.error('Error marking attendance: ' + err);
-      return res.status(500).json({ error: 'Error marking attendance' });
-    }
-    res.status(201).json({ message: 'Attendance marked successfully' });
+	const user =result[0];
+	
+	
+	if (!studentId) {
+	    return res.status(400).json({ error: 'Student ID is required' });
+	}
+	// today's date
+	const today = new Date().toISOString().split('T')[0];
+
+	if(!(result.length ===0)){
+	
+	    const ltoday = new Date().toLocaleString().split(',')[0];
+	    const dateindb = user.date.toLocaleString().split(',')[0];
+	    console.log(dateindb);
+	    console.log(today);
+	    if(dateindb === ltoday){
+		const query1 = 'UPDATE studentState SET present = ? WHERE studentId=? AND date=?';
+		db.query(query1, [present,studentId,today], (err, result) => {
+		    if (err) {
+			console.error('Error marking attendance1: ' + err);
+			return res.status(500).json({ error: 'Error marking attendance1' });
+		    }
+		    res.status(201).json({ message: 'Attendance marked successfully1' });
+		}); 
+	    }
+	    else{
+	  
+	    const query = 'INSERT INTO studentState (studentId, date, present) VALUES (?, ?, ?)';
+	    db.query(query, [studentId, today, present], (err, result) => {
+		if (err) {
+		    console.error('Error marking attendance: ' + err);
+		    return res.status(500).json({ error: 'Error marking attendance' });
+		}
+		res.status(201).json({ message: 'Attendance marked successfully' });
+	    });
+	}
+	}
+	
+	else{
+	  
+	    const query = 'INSERT INTO studentState (studentId, date, present) VALUES (?, ?, ?)';
+	    db.query(query, [studentId, today, present], (err, result) => {
+		if (err) {
+		    console.error('Error marking attendance: ' + err);
+		    return res.status(500).json({ error: 'Error marking attendance' });
+		}
+		res.status(201).json({ message: 'Attendance marked successfully' });
+	    });
+	}
   });
+});
+// Signup Endpoint
+app.post('/signup', async (req, res) => {
+    console.log(req.body);
+  const { username, password } = req.body;
+  // Hash password
+  const hashedPassword = await bcrypt.hash(password, 10);
+  // Store username and hashedPassword in database
+    // ...
+    const query = 'INSERT INTO users(userName,password) VALUES(?,?)';
+    db.query(query,[username,password], (err,result)=>{
+	if(err){
+	    console.error('Error adding user:',err);
+	    return res.status(500).json({error: 'Error creating user'});
+	}
+    });
+  res.status(201).send('User created successfully');
+});
+// Login Endpoint
+app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+
+    // Retrieve user from database
+    const query = 'SELECT * FROM users WHERE userName=?';
+    db.query(query, [username], async (err, result) => {
+        if (err) {
+            console.error('Error retrieving user:', err);
+            return res.status(500).json({ error: 'Error retrieving the user:' });
+        }
+        if (result.length === 0) {
+            return res.status(401).json({ error: 'Invalid credentials:' });
+        }
+
+        const user = result[0];
+        // Check if password is correct
+        if (user.password != password) return res.status(401).send('Invalid credentials: password wrong');
+
+        // Create token with admin role
+        const tokenPayload = {
+            userId: user.id,
+            adminRole: user.adminRole // Include admin role in the token payload
+        };
+        const token = jwt.sign(
+            tokenPayload, // Payload
+            process.env.JWT_SECRET_KEY, // Secret key from .env file
+            { expiresIn: '24h' } // Token expiration time
+        );
+
+        res.json({ accessToken: token,firstName: username,lastname:password });
+    });
+});
+//students
+// Endpoint to fetch student details by name
+app.get('/students', (req, res) => {
+    const { firstName, lastName } = req.query;
+
+    // Check if both first name and last name are provided
+    if (!firstName || !lastName) {
+        return res.status(400).json({ error: 'Both first name and last name are required' });
+    }
+
+    // Construct query to search for students by name
+    const query = `
+        SELECT *
+        FROM students
+        WHERE firstName = ? AND lastName = ?
+    `;
+    
+    // Execute the query with the provided first name and last name
+    db.query(query, [firstName, lastName], (err, results) => {
+        if (err) {
+            console.error('Error fetching student details:', err);
+            return res.status(500).json({ error: 'Error fetching student details' });
+        }
+        
+        // Check if any student is found
+        if (results.length === 0) {
+            return res.status(404).json({ error: 'Student not found' });
+        }
+
+        // Return the student details
+        res.status(200).json(results);
+    });
+});
+
+//addmarks1
+app.post('/addmarks1', (req, res) => {
+    const { studentId, subject, totalMark, co1, co2 } = req.body;
+
+    const query = 'INSERT INTO test1 (studentId, subject, totalMark, co1, co2) VALUES (?, ?, ?, ?, ?)';
+    db.query(query, [studentId, subject, totalMark, co1, co2], (err, result) => {
+        if (err) {
+            console.error('Error inserting marks into test1:', err);
+            return res.status(500).json({ error: 'Error inserting marks into test1' });
+        }
+        res.status(201).json({ message: 'Marks added successfully to test1' });
+    });
+});
+//marks2
+//addmarks1
+app.post('/addmarks1', (req, res) => {
+    const { studentId, subject, totalMark, co1, co2 } = req.body;
+
+    const query = 'INSERT INTO test1 (studentId, subject, totalMark, co1, co2) VALUES (?, ?, ?, ?, ?)';
+    db.query(query, [studentId, subject, totalMark, co1, co2], (err, result) => {
+        if (err) {
+            console.error('Error inserting marks into test1:', err);
+            return res.status(500).json({ error: 'Error inserting marks into test1' });
+        }
+        res.status(201).json({ message: 'Marks added successfully to test1' });
+    });
+});
+//marks2
+app.post('/addmarks2', (req, res) => {
+    const { studentId, subject, totalMark, co3, co4 } = req.body;
+
+    const query = 'INSERT INTO test2 (studentId, subject, totalMark, co3, co4) VALUES (?, ?, ?, ?, ?)';
+    db.query(query, [studentId, subject, totalMark, co3, co4], (err, result) => {
+        if (err) {
+            console.error('Error inserting marks into test1:', err);
+            return res.status(500).json({ error: 'Error inserting marks into test1' });
+        }
+        res.status(201).json({ message: 'Marks added successfully to test1' });
+    });
 });
 
 
+
+// A protected route example 
+app.get('/protected-route', authenticateToken, (req,res)=>{
+    res.send(`Welcome! You're authenticated.`);
+});
+
 //start the server
-app.listen(port,() =>{
-    console.log(`Server is runnting on port ${port}`);
+app.listen(port,'0.0.0.0',() =>{
+    console.log(`Server is runnting on http://0.0.0.0:${port}`);
 });

@@ -9,8 +9,7 @@ export default function Home(){
             <h2>Student Result Activity Analysis System</h2>
           
             <div className="sinup" >
-              <button className="login-body">LOGIN</button>
-              <Link className="siginin" to="/siginin"><button className="siginin-body">SIGN IN</button></Link>
+              <Link className="siginin" to="/siginin"><button className="siginin-body">LOG IN</button></Link>
 
             </div></div>
           

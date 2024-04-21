@@ -1,0 +1,38 @@
+.Signincontainer{
+    display:flex;
+    justify-content:center;
+}
+.Siginin{
+  background: radial-gradient( #232323,#1D1D1D);
+  padding: 1rem;
+  margin: 2rem;
+  height: 28rem;
+  width: 22rem;
+  display: flex;
+  flex-direction:column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  border: .1rem solid #3A3439;
+}
+.textcontainer{
+    display:flex;
+    align-items:center;
+    flex-direction:column;
+}
+.textcontainer h2{
+    font-size:1.6rem;
+    margin-bottom:1rem;
+}
+.textcontainer input{
+    border-radius: 3rem;
+    height: 2.5rem;
+    width:17rem;
+    margin-top:1rem;
+}
+.buttons{
+    display: flex;
+    margin-top:2rem;
+    justify-content: space-between;
+    width: 11rem;
+}

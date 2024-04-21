@@ -1,5 +1,0 @@
-.Navbar{
-    background-color: 	#aad6ec;
-    display:flex;
-    padding:10px;
-}

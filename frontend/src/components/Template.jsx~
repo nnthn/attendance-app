@@ -1,0 +1,51 @@
+// Template.jsx
+
+import React, { useState, useEffect } from 'react';
+
+const Template = ({firstName,lastname}) => {
+   
+
+    const [students, setStudents] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    console.log(firstName,lastname);
+    useEffect(() => {
+        const fetchStudents = async () => {
+            try {
+                setIsLoading(true);
+                // Send a GET request to fetch student details with username as firstName and password as lastName
+                const response = await fetch(`http://localhost:3001/students?firstName=${username}&lastName=${password}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    setStudents(data);
+                } else {
+                    console.error('Failed to fetch student details.');
+                }
+            } catch (error) {
+                console.error('Error fetching student details:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchStudents();
+    }, []);
+
+    return (
+        <div>
+            <h2>Student Details</h2>
+            {isLoading ? (
+                <p>Loading...</p>
+            ) : (
+                <ul>
+                    {students.map((student, index) => (
+                        <li key={index}>
+                            {student.firstName} {student.lastName}
+                        </li>
+                    ))}
+                </ul>
+            )}
+        </div>
+    );
+};
+
+export default Template;

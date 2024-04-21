@@ -6,7 +6,7 @@ export default function StudentsList({ onItemClick }) {
 
     useEffect(() => {
         // Fetch the student data from the server
-        fetch('http://localhost:3001/students')
+        fetch('http://localhost:3001/verifiedstudents')
             .then((response) => response.json())
             .then((data) =>
                 setStudents(
@@ -28,7 +28,20 @@ export default function StudentsList({ onItemClick }) {
     };
 
     const handleAttendance = (studentId, present) => {
-        // Logic to mark attendance
+        // Send a POST request to update verification status
+        fetch('http://localhost:3001/verification', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                studentId: studentId,
+                verified: present,
+            }),
+        })
+            .then((response) => response.json())
+            .then((result) => console.log('Verification status updated successfully:', result))
+            .catch((error) => console.error('Error updating verification status:', error));
     };
 
     return (
@@ -36,9 +49,7 @@ export default function StudentsList({ onItemClick }) {
             <div className="studentsContainer">
                 <div className="studentscard">
                     {students.map((student) => (
-                        <div>
-<div className="form1">
-                          <div key={student.id} className="attendance-card" onClick={() => onItemClick(student)}> {/* Call onItemClick */}
+                        <div key={student.id} className="attendance-card" onClick={() => onItemClick(student)}> {/* Call onItemClick */}
                             <div className="text">
                               <h3>
                                 {student.firstName} {student.lastName}
@@ -57,11 +68,10 @@ export default function StudentsList({ onItemClick }) {
                               <button onClick={() => handleAttendance(student.id, student.present)}>Submit</button>
                             </div>
                           </div>
-                        </div>
-                        </div>
-                    ))}
+                     ))}
                 </div>
             </div>
+          
         </>
     );
 }
