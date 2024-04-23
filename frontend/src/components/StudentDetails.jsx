@@ -54,6 +54,7 @@ export default function StudentDetails({ student }) {
             .then((response) => response.json())
             .then((result) => {
                 console.log('Marks added successfully to addmarks1:', result);
+                alert("Mark 1  added Successfully");
                 // Add any logic to handle successful submission
             })
             .catch((error) => console.error('Error adding marks to addmarks1:', error));
@@ -80,6 +81,7 @@ export default function StudentDetails({ student }) {
             .then((response) => response.json())
             .then((result) => {
                 console.log('Marks added successfully to addmarks2:', result);
+                alert("Mark 2  added Successfully");
                 // Add any logic to handle successful submission
             })
             .catch((error) => console.error('Error adding marks to addmarks2:', error));
