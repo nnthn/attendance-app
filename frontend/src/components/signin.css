@@ -39,3 +39,12 @@
 .student-form{
     padding: 2rem;
 }
+.std-container{
+    display: flex;
+    justify-content: space-between;
+}
+.button-container{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}

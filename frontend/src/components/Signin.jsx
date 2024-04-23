@@ -63,7 +63,7 @@ export default function Signin() {
         <div className="Signincontainer">
             <div className="Siginin">
                 <div className="textcontainer">
-                    <h2>SRAAS</h2>
+                    <h2>SRAS</h2>
                     <input
                         type="text"
                         placeholder="UserName"

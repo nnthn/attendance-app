@@ -5,7 +5,8 @@ import AddNonAcademics from './AddNonAcademics';
 function NextPage() {
     const firstNamestr = localStorage.getItem('firstName');
     const lastNamestr = localStorage.getItem('lastName');
-
+    const [showForm,setShowForm] = useState(false);
+    const [academics,setAcademics] = useState(false);
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [studentDetails, setStudentDetails] = useState(null);
@@ -60,7 +61,7 @@ function NextPage() {
 
     return (
         <div className="student-login">
-          <div>
+          <div className="std-container">
             {isLoading && <p>Loading...</p>}
             {error && <p>{error}</p>}
             {studentDetails && (
@@ -76,15 +77,20 @@ function NextPage() {
                   </div>
                   
                 </div>
-            )}
+            )} <div className="button-container">
+                 <button style={{width:'fit-content' ,padding:'1rem',margin:"1rem"}} onClick={()=>{setAcademics(true);setShowForm(!showForm);}}>Add Academic Details</button>
+                 <button style={{width:'fit-content' ,padding:'1rem',margin:"1rem"}} onClick={()=>{setAcademics(false);setShowForm(!showForm);}}>Add NonAcademic Details</button>
+               </div>
           </div>
+          
           <div >
+           
              {isLoading && <p>Loading...</p>}
             {error && <p>{error}</p>}
-            {studentDetails && (
+            {studentDetails && showForm && (
                 <div className="add-details">
-                  <AddAcademics studentId={studentDetails[0].id} semister={studentDetails[0].semister}/>
-                  <AddNonAcademics studentId={studentDetails[0].id}/>
+                  {academics? <AddAcademics studentId={studentDetails[0].id} semister={studentDetails[0].semister} setShow={setShowForm}/>: <AddNonAcademics setShow={setShowForm} studentId={studentDetails[0].id}/>}
+
                 </div>
             )}
            

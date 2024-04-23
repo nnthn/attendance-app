@@ -9,7 +9,7 @@ export default function Nav() {
     <div className="Navbar">
       <div className="logogrp">
         <img src={logoimg} alt="logo of attendify" />
-        <h2 className="attendify">SRAAS</h2>
+        <h2 className="attendify">SRAS</h2>
       </div>
     </div>
   );

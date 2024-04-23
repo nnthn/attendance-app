@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 function StudentAcademicsDetails({ studentId }) {
-    const [academicsDetails, setAcademicsDetails] = useState(null);
+    const [academicsDetails, setAcademicsDetails] = useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -35,7 +35,7 @@ function StudentAcademicsDetails({ studentId }) {
 
         fetchAcademicsDetails();
     }, [studentId]);
-
+    console.table(academicsDetails[0]);
     return (
         <div>
             {isLoading && <p>Loading...</p>}

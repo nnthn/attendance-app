@@ -93,11 +93,19 @@ export default function StudentDetails({ student }) {
           <div className="student-details-container">
             <div className="form-container">
               <div className="forms">
-                <h4>Add Marks to addmarks1</h4>
+                <h4>Add Marks 1</h4>
                 <form onSubmit={handleSubmit1}>
                   <label>
                     Subject:
-                    <input type="text" name="subject" value={marksData1.subject} onChange={handleChange1} />
+                    <select name="subject" value={marksData1.subject} onChange={handleChange1}>
+                      <option value="">Select Subject</option>
+                      <option value="Compiler Design">Compiler Design</option>
+                      <option value="Computer Graphics">Computer Graphics</option>
+                      <option value="AAD">AAD</option>
+                      <option value="IEFT">IEFT</option>
+                      <option value="Python">Python</option>
+                      <option value="Data Communications">Data Communications</option>
+                    </select>
                   </label>
                   <label>
                     Total Mark:
@@ -111,15 +119,23 @@ export default function StudentDetails({ student }) {
                     CO2:
                     <input type="number" name="co2" value={marksData1.co2} onChange={handleChange1} />
                   </label>
-                  <button type="submit">Add Marks to addmarks1</button>
+                  <button type="submit">Add Marks 1</button>
                 </form>
               </div>
               <div className="forms">
-                <h4>Add Marks to addmarks2</h4>
+                <h4>Add Marks 2</h4>
                 <form onSubmit={handleSubmit2}>
                   <label>
                     Subject:
-                    <input type="text" name="subject" value={marksData2.subject} onChange={handleChange2} />
+                    <select name="subject" value={marksData1.subject} onChange={handleChange1}>
+                      <option value="">Select Subject</option>
+                      <option value="Compiler Design">Compiler Design</option>
+                      <option value="Computer Graphics">Computer Graphics</option>
+                      <option value="AAD">AAD</option>
+                      <option value="IEFT">IEFT</option>
+                      <option value="Python">Python</option>
+                      <option value="Data Communications">Data Communications</option>
+                    </select>
                   </label>
                   <label>
                     Total Mark:
@@ -133,7 +149,7 @@ export default function StudentDetails({ student }) {
                     CO4:
                     <input type="number" name="co4" value={marksData2.co4} onChange={handleChange2} />
                   </label>
-                  <button type="submit">Add Marks to addmarks2</button>
+                  <button type="submit">Add Marks 2</button>
                 </form>
               </div>
               

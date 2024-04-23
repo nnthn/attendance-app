@@ -16,7 +16,7 @@ export default function Students() {
         setSelectedStudent(student);
         setNewStudent(!newStudent);// Set the selected student
     };
-
+    
     return (
         <>
           <div className="studentslist-container">

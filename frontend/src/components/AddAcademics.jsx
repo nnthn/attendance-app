@@ -71,7 +71,7 @@ function AddAcademics(props) {
                 </label>
                 <br />
                 <br />
-                <button type="submit">Submit</button>
+              <button type="submit" onClick={()=>{props.setShow(false);}}>Submit</button>
             </form>
         </div>
     );
