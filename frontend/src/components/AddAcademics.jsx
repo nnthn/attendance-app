@@ -32,7 +32,6 @@ function AddAcademics(props) {
 
             alert('Academics details added successfully');
             props.setShow(false);
-            // Clear form after successful submission
             setFormData({
                 studentId: props.studentId,
                 grade: '',
