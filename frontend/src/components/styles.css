@@ -97,3 +97,15 @@ align-items: center;
     justify-content: space-between;
     padding-right: 2rem;
 }
+.form-container{
+    display: flex;
+    margin-top: 1rem;
+    justify-content: space-between;
+}
+.forms{
+    width: 40%;
+}
+.academics-container{
+    height: 38vh;
+    overflow-y: scroll;
+}

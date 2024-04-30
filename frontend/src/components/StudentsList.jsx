@@ -59,7 +59,7 @@ export default function StudentsList({ onItemClick }) {
                               </h3>
                             </div>
                             <div className="markattendance">
-                              <p>Semester : S6</p>
+                              <p>Semester : S{student.semister}</p>
                               <label>
                                 <input
                                   type="checkbox"

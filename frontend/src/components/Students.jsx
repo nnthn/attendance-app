@@ -12,7 +12,17 @@ import StudentNonAcademics from './StudentNonAcademics.jsx';
 export default function Students() {
     const [selectedStudent, setSelectedStudent] = useState('');
     const [student,setStudent] =useState('');
-    const [newStudent, setNewStudent] = useState(true);
+    const [newStudent, setNewStudent] = useState(false);
+
+    const [sem, setSem] = useState({
+        semester: '',
+    });
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setSem({ ...sem, [name]: value });
+        console.log(sem.semester);
+    };
     const handleListItemClick = (student) => {
         setSelectedStudent(student);
         setNewStudent(false);  
@@ -31,12 +41,27 @@ export default function Students() {
                 <div className="all-students">
                   <div>
                     <h3 className="sub-heading">Students</h3>
+                    
                   </div>
                   <div>
                     <button onClick={handleStudentButton}>AddStudent</button>
                   </div>
                 </div>
-                <Verified onItemClick={onStudentClick}/>
+                <label>
+                    Subject:
+                  <select name="semester" value={sem.semester} onChange={handleChange}>
+                      <option value="">Select Subject</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                      <option value="6">6</option>
+                      <option value="7">7</option>
+                      <option value="8">8</option>
+                    </select>
+               </label>
+                <Verified onItemClick={onStudentClick} sem={sem.semester}/>
               </div>
               <div className="info-diagram">
                 <StudentDetails student={student} />

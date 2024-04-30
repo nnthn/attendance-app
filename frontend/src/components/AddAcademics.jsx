@@ -4,8 +4,8 @@ function AddAcademics(props) {
     
     const [formData, setFormData] = useState({
         studentId: props.studentId,
-        totalMark: '',
-        sgpa: '',
+        grade: '',
+        subject: '',
         semester: props.semister
     });
 
@@ -35,9 +35,9 @@ function AddAcademics(props) {
             // Clear form after successful submission
             setFormData({
                 studentId: props.studentId,
-                totalMark: '',
-                sgpa: '',
-                semester: props.semister
+                grade: '',
+                subject: '',
+                semester:'',
             });
         } catch (error) {
             console.error('Error adding academics details:', error);
@@ -49,27 +49,43 @@ function AddAcademics(props) {
         <div className="academic-container">
             <h2>Add Academics Details</h2>
             <form onSubmit={handleSubmit}>
-                
+                <label>
+                    Semester :
+                    <select name="semester" value={formData.semester} onChange={handleChange}>
+                      <option value="">Select Semester</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                      <option value="6">6</option>
+                      <option value="7">7</option>
+                      <option value="8">8</option>
+                    </select>
+               </label>
                 <br />
                 <label>
-                    Total Mark:
+                    Grade :
                     <input
                         type="text"
-                        name="totalMark"
-                        value={formData.totalMark}
+                        name="grade"
+                        value={formData.grade}
                         onChange={handleChange}
                     />
                 </label>
-                <br />
-                <label>
-                    SGPA:
-                    <input
-                        type="text"
-                        name="sgpa"
-                        value={formData.sgpa}
-                        onChange={handleChange}
-                    />
-                </label>
+              <br />
+               <label>
+                    Subject :
+                    <select name="subject" value={formData.subject} onChange={handleChange}>
+                      <option value="">Select Subject</option>
+                      <option value="Compiler Design">Compiler Design</option>
+                      <option value="Computer Graphics">Computer Graphics</option>
+                      <option value="AAD">AAD</option>
+                      <option value="IEFT">IEFT</option>
+                      <option value="Python">Python</option>
+                      <option value="Data Communications">Data Communications</option>
+                    </select>
+               </label>
                 <br />
                 <br />
               <button type="submit">Submit</button>

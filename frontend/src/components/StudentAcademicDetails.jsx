@@ -37,19 +37,22 @@ function StudentAcademicsDetails({ studentId }) {
     }, [studentId]);
     console.table(academicsDetails[0]);
     return (
-        <div>
+        <div >
             {isLoading && <p>Loading...</p>}
-            {error && <p>{error}</p>}
-            {academicsDetails && (
+          {error && <p>{error}</p>}
+          <h2>Student Academics Details</h2>
+          <div className="academics-container"> 
+          {academicsDetails && academicsDetails.map((details)=>(
                 <div>
-                    <h2>Student Academics Details</h2>
-                    <p>Student ID: {studentId}</p>
-                    <p>Total Mark: {academicsDetails[0].totalMark}</p>
-                    <p>SGPA: {academicsDetails[0].sgpa}</p>
-                    <p>Semester: {academicsDetails[0].semester}</p>
-                    {/* Add other details if needed */}
+                  <p>Student ID: {studentId}</p>
+                  <p>Grade: {details.grade}</p>
+                  <p>Subject: {details.subject}</p>
+                  <p>Semester: {details.semester}</p>
+                  <br/>
+                  {/* Add other details if needed */}
                 </div>
-            )}
+          ))}
+          </div>
         </div>
     );
 }

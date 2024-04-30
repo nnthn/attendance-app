@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './students.css';
 
-export default function NonVerifiedStudentsList({ onItemClick }) {
+export default function NonVerifiedStudentsList({ onItemClick,sem }) {
     const [students, setStudents] = useState([]);
 
     useEffect(() => {
@@ -11,21 +11,21 @@ export default function NonVerifiedStudentsList({ onItemClick }) {
             .then((data) => setStudents(data))
             .catch((error) => console.error('Error while fetching:', error));
     }, []);
-
+    console.log("here");
+    console.log(sem);
     return (
         <>
             <div className="studentsContainer">
                 <div className="studentscard">
-                    {students.map((student) => (
-                        <div key={student.id} className="attendance-card" onClick={() => onItemClick(student)}>
-                            
+                  {students.map((student) => (
+                      
+                        student.semister == sem ?                         <div key={student.id} className="attendance-card" onClick={() => onItemClick(student)}>
+                          <h4 >
+                            {student.firstName} {student.lastName}
+                          </h4>
+                          <p>Semester: S{student.semister}</p>
 
-                                <h4 >
-                                    {student.firstName} {student.lastName}
-                                </h4>
-                          <p>Semester: S6</p>
-
-                        </div>
+                                                                           </div>:<h4></h4>
                     ))}
                 </div>
             </div>

@@ -376,34 +376,26 @@ async function updateVerificationStatus(studentId) {
 
 // Add academics data
 app.post('/addacademics', async (req, res) => {
-    const { studentId, totalMark, sgpa, semester } = req.body;
+    const { studentId, grade, subject, semester } = req.body;
 
     // Validate request body
-    if (!studentId || !totalMark || !sgpa || !semester) {
+    if (!studentId || !grade || !subject || !semester) {
         return res.status(400).json({ error: 'All fields are required' });
     }
 
-    // Check if the studentId already exists in the table
-    const checkQuery = 'SELECT * FROM studentAcademics WHERE studentId = ?';
     try {
-        const [rows] = await db.promise().query(checkQuery, [studentId]);
-        if (rows.length === 0) {
-            // If studentId does not exist, insert a new record
-            const insertQuery = 'INSERT INTO studentAcademics (studentId, totalMark, sgpa, semester) VALUES (?, ?, ?, ?)';
-            await db.promise().query(insertQuery, [studentId, totalMark, sgpa, semester]);
-        } else {
-            // If studentId exists, update the existing record
-            const updateQuery = 'UPDATE studentAcademics SET totalMark = ?, sgpa = ?, semester = ? WHERE studentId = ?';
-            await db.promise().query(updateQuery, [totalMark, sgpa, semester, studentId]);
-        }
-        
-        await updateVerificationStatus(studentId); // Update verification status
+        // Insert data into studentAcademics table
+        const insertQuery = 'INSERT INTO studentAcademics (studentId, grade, subject, semester) VALUES (?, ?, ?, ?)';
+        await db.promise().query(insertQuery, [studentId, grade, subject, semester]);
+        await updateVerificationStatus(studentId)
         res.status(201).json({ message: 'Data added successfully to studentAcademics' });
     } catch (error) {
         console.error('Error adding academics data:', error);
         res.status(500).json({ error: 'Error adding data to studentAcademics' });
     }
 });
+
+
 
 // Add non-academics data
 app.post('/addnonacademics', async (req, res) => {
