@@ -60,9 +60,9 @@ export default function Signin() {
     };
 
     return (
-        <div className="Signincontainer">
-            <div className="Siginin">
-                <div className="textcontainer">
+        <div className="signin-container">
+            <div className="signin-card">
+                <div className="text-container">
                     <h2>SRAS</h2>
                     <input
                         type="text"

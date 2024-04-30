@@ -3,7 +3,7 @@ import './students.css';
 
 export default function StudentsList({ onItemClick }) {
     const [students, setStudents] = useState([]);
-
+    const [updated,setUpdated]=useState(false);
     useEffect(() => {
         // Fetch the student data from the server
         fetch('http://localhost:3001/verifiedstudents')
@@ -17,7 +17,7 @@ export default function StudentsList({ onItemClick }) {
                 )
             )
             .catch((error) => console.error('Error while fetching:', error));
-    }, []);
+    }, [updated]);
 
     const handleCheckboxChange = (id) => {
         setStudents((prevStudents) =>
@@ -25,6 +25,7 @@ export default function StudentsList({ onItemClick }) {
                 student.id === id ? { ...student, present: !student.present } : student
             )
         );
+
     };
 
     const handleAttendance = (studentId, present) => {
@@ -40,8 +41,10 @@ export default function StudentsList({ onItemClick }) {
             }),
         })
             .then((response) => response.json())
-            .then((result) => console.log('Verification status updated successfully:', result))
+            .then((result) => console.log('Verification status updated successfully:', result) )
+        
             .catch((error) => console.error('Error updating verification status:', error));
+        
     };
 
     return (
@@ -56,16 +59,16 @@ export default function StudentsList({ onItemClick }) {
                               </h3>
                             </div>
                             <div className="markattendance">
-                              <p>Branch: {student.branch}</p>
+                              <p>Semester : S6</p>
                               <label>
                                 <input
                                   type="checkbox"
                                   checked={student.present}
-                                  onChange={() => handleCheckboxChange(student.id)}
+                                  onChange={() =>{ handleCheckboxChange(student.id);}}
                                 />{' '}
                                 verified
                               </label>
-                              <button onClick={() => handleAttendance(student.id, student.present)}>Submit</button>
+                              <button onClick={() =>{setUpdated(!updated); handleAttendance(student.id, student.present);setUpdated(!updated);}}>Submit</button>
                             </div>
                           </div>
                      ))}

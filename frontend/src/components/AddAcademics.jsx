@@ -16,7 +16,7 @@ function AddAcademics(props) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+        console.log('here to submit');
         try {
             const response = await fetch('http://localhost:3001/addacademics', {
                 method: 'POST',
@@ -31,6 +31,7 @@ function AddAcademics(props) {
             }
 
             alert('Academics details added successfully');
+            props.setShow(false);
             // Clear form after successful submission
             setFormData({
                 studentId: props.studentId,
@@ -71,7 +72,7 @@ function AddAcademics(props) {
                 </label>
                 <br />
                 <br />
-              <button type="submit" onClick={()=>{props.setShow(false);}}>Submit</button>
+              <button type="submit">Submit</button>
             </form>
         </div>
     );

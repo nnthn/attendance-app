@@ -30,6 +30,7 @@ export default function AddNonAcademics(props) {
             }
 
             alert('Non-academics details added successfully');
+            props.setShow(false);
             // Clear form after successful submission
             setFormData({
                 studentId: props.studetnId,
@@ -78,7 +79,7 @@ export default function AddNonAcademics(props) {
                     />
                 </label>
                 <br />
-              <button type="submit" onClick={()=>{props.setShow(false);}}>Submit</button>
+              <button type="submit" >Submit</button>
             </form>
         </div>
     );

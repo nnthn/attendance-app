@@ -101,8 +101,7 @@ app.get('/nonverifiedstudents', (req, res) => {
     const query = `
         SELECT students.*
         FROM students
-        INNER JOIN verification ON students.id = verification.studentId
-        WHERE verification.verified = 1
+        
     `;
     db.query(query, (err, results) => {
         if (err) {

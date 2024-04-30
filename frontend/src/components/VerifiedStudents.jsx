@@ -23,7 +23,7 @@ export default function NonVerifiedStudentsList({ onItemClick }) {
                                 <h4 >
                                     {student.firstName} {student.lastName}
                                 </h4>
-                                <p>Branch: {student.branch}</p>
+                          <p>Semester: S6</p>
 
                         </div>
                     ))}

@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import StudentAcademicDetails from './StudentAcademicDetails.jsx';
-import StudentNonAcademics from './StudentNonAcademics.jsx';
 
 export default function StudentDetails({ student }) {
     const [marksData1, setMarksData1] = useState({
@@ -54,6 +52,7 @@ export default function StudentDetails({ student }) {
             .then((response) => response.json())
             .then((result) => {
                 console.log('Marks added successfully to addmarks1:', result);
+                alert("Mark 1  added Successfully");
                 // Add any logic to handle successful submission
             })
             .catch((error) => console.error('Error adding marks to addmarks1:', error));
@@ -80,6 +79,7 @@ export default function StudentDetails({ student }) {
             .then((response) => response.json())
             .then((result) => {
                 console.log('Marks added successfully to addmarks2:', result);
+                alert("Mark 2  added Successfully");
                 // Add any logic to handle successful submission
             })
             .catch((error) => console.error('Error adding marks to addmarks2:', error));
@@ -88,7 +88,7 @@ export default function StudentDetails({ student }) {
     return (
         <div>
           <h2>Selected Student Details</h2>
-          <p>Name: {student.firstName} {student.lastName}</p>
+          <p>Name:<b> {student.firstName} {student.lastName}</b></p>
           <p>Branch: {student.branch}</p>
           <div className="student-details-container">
             <div className="form-container">
@@ -154,8 +154,7 @@ export default function StudentDetails({ student }) {
               </div>
               
             </div>
-            <StudentAcademicDetails studentId={student.id}/>
-              <StudentNonAcademics studentId={student.id}/>
+          
           </div>
         </div>
     );

@@ -8,7 +8,6 @@ export default function Nav() {
   return (
     <div className="Navbar">
       <div className="logogrp">
-        <img src={logoimg} alt="logo of attendify" />
         <h2 className="attendify">SRAS</h2>
       </div>
     </div>
