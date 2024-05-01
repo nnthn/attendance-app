@@ -48,7 +48,7 @@ function AddAcademics(props) {
         <div className="academic-container">
             <h2>Add Academics Details</h2>
             <form onSubmit={handleSubmit}>
-                <label>
+                <label className="form">
                     Semester :
                     <select name="semester" value={formData.semester} onChange={handleChange}>
                       <option value="">Select Semester</option>
@@ -62,18 +62,8 @@ function AddAcademics(props) {
                       <option value="8">8</option>
                     </select>
                </label>
-                <br />
-                <label>
-                    Grade :
-                    <input
-                        type="text"
-                        name="grade"
-                        value={formData.grade}
-                        onChange={handleChange}
-                    />
-                </label>
               <br />
-               <label>
+                <label className="form">
                     Subject :
                     <select name="subject" value={formData.subject} onChange={handleChange}>
                       <option value="">Select Subject</option>
@@ -85,9 +75,21 @@ function AddAcademics(props) {
                       <option value="Data Communications">Data Communications</option>
                     </select>
                </label>
-                <br />
-                <br />
+              <br/>
+                <label>
+                    Grade :
+                  <input
+                    className="input academic-grade"
+                        type="text"
+                        name="grade"
+                        value={formData.grade}
+                        onChange={handleChange}
+                    />
+                </label>
+              <br />
+              <br />
               <button type="submit">Submit</button>
+                <br />
             </form>
         </div>
     );

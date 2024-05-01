@@ -27,7 +27,8 @@ function StudentAcademicsDetails({ studentId }) {
                 setAcademicsDetails(data.data);
             } catch (error) {
                 console.error('Error fetching student academics details:', error);
-                setError('Failed to fetch student academics details');
+                setError('');
+                setAcademicsDetails('');
             } finally {
                 setIsLoading(false);
             }
@@ -44,10 +45,10 @@ function StudentAcademicsDetails({ studentId }) {
           <div className="academics-container"> 
           {academicsDetails && academicsDetails.map((details)=>(
                 <div>
-                  <p>Student ID: {studentId}</p>
-                  <p>Grade: {details.grade}</p>
-                  <p>Subject: {details.subject}</p>
-                  <p>Semester: {details.semester}</p>
+                  <p>Student ID : {studentId}</p>
+                  <p>Grade : {details.grade}</p>
+                  <p>Subject : {details.subject}</p>
+                  <p>Semester : {details.semester}</p>
                   <br/>
                   {/* Add other details if needed */}
                 </div>

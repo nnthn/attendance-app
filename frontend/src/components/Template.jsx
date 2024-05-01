@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {Link } from 'react-router-dom';
 import AddAcademics from './AddAcademics';
 import AddNonAcademics from './AddNonAcademics';
+import TestDataTable from './TestDataTable.jsx';
 function NextPage() {
     const firstNamestr = localStorage.getItem('firstName');
     const lastNamestr = localStorage.getItem('lastName');
@@ -9,7 +10,7 @@ function NextPage() {
     const [academics,setAcademics] = useState(false);
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
-    const [studentDetails, setStudentDetails] = useState(null);
+    const [studentDetails, setStudentDetails] = useState();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -61,41 +62,47 @@ function NextPage() {
 
     return (
         <div className="student-login">
-          <div className="std-container">
-            {isLoading && <p>Loading...</p>}
-            {error && <p>{error}</p>}
-            {studentDetails && (
-                <div>
-                  <h3>Student Details:</h3>
-                  <div key={studentDetails[0].id}>
-                    <p>Name :{studentDetails[0].firstName} {studentDetails[0].lastName}</p>
-                    <p>Email : {studentDetails[0].email}</p>
-                    <p>Branch : {studentDetails[0].branch}</p>
-                    <p>Semister : S{studentDetails[0].semister}</p>
-                    <p>PhoneNumber : {studentDetails[0].phoneNumber}</p>
-                    <p>Address : {studentDetails[0].address}</p>
+          <div className="std-ip">
+            <div className="std-container">
+              {isLoading && <p>Loading...</p>}
+              {error && <p>{error}</p>}
+              {studentDetails && (
+                  <div>
+                    <h3>Student Details:</h3>
+                    <div key={studentDetails[0].id}>
+                      <p>Name :{studentDetails[0].firstName} {studentDetails[0].lastName}</p>
+                      <p>Email : {studentDetails[0].email}</p>
+                      <p>Branch : {studentDetails[0].branch}</p>
+                      <p>Semister : S{studentDetails[0].semister}</p>
+                      <p>PhoneNumber : {studentDetails[0].phoneNumber}</p>
+                      <p>Address : {studentDetails[0].address}</p>
+                    </div>
+                    
                   </div>
-                  
-                </div>
-            )} <div className="button-container">
-                 <button style={{width:'fit-content' ,padding:'1rem',margin:"1rem"}} onClick={()=>{setAcademics(true);setShowForm(!showForm);}}>Add Academic Details</button>
-                 <button style={{width:'fit-content' ,padding:'1rem',margin:"1rem"}} onClick={()=>{setAcademics(false);setShowForm(!showForm);}}>Add NonAcademic Details</button>
-               </div>
-          </div>
-          
-          <div >
-           
-             {isLoading && <p>Loading...</p>}
-            {error && <p>{error}</p>}
-            {studentDetails && showForm && (
-                <div className="add-details">
-                  {academics? <AddAcademics studentId={studentDetails[0].id} semister={studentDetails[0].semister} setShow={setShowForm}/>: <AddNonAcademics setShow={setShowForm} studentId={studentDetails[0].id}/>}
+              )} <div className="button-container">
+                      <button style={{width:'fit-content' ,padding:'1rem',margin:"1rem"}} onClick={()=>{setAcademics(true);setShowForm(!showForm);}}>Add Academic Details</button>
+                      <button style={{width:'fit-content' ,padding:'1rem',margin:"1rem"}} onClick={()=>{setAcademics(false);setShowForm(!showForm);}}>Add NonAcademic Details</button>
+                    </div>
+            </div>
+            
+            <div >
+              
+              {isLoading && <p>Loading...</p>}
+              {error && <p>{error}</p>}
+              {studentDetails && showForm && (
+                  <div className="add-details">
+                    {academics? <AddAcademics studentId={studentDetails[0].id} semister={studentDetails[0].semister} setShow={setShowForm}/>: <AddNonAcademics setShow={setShowForm} studentId={studentDetails[0].id}/>}
 
-                </div>
-            )}
-           
+                  </div>
+              )}
+              
+            </div>
+            <Link className="siginin" to="/"><button className="siginin-body">LOG OUT</button></Link>
           </div>
-           <Link className="siginin" to="/"><button className="siginin-body">LOG OUT</button></Link>
+          <div>
+
+            {studentDetails&&<TestDataTable studentId={studentDetails[0].id}/>}
+          </div>
         </div>
     );
 }

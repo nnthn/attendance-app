@@ -7,13 +7,13 @@ import AddStudent from './Addstudents.jsx';
 import './students.css';
 import StudentAcademicDetails from './StudentAcademicDetails.jsx';
 import StudentNonAcademics from './StudentNonAcademics.jsx';
-
+import PieChartComponent from "./PiechartComponent.jsx";
 
 export default function Students() {
     const [selectedStudent, setSelectedStudent] = useState('');
     const [student,setStudent] =useState('');
     const [newStudent, setNewStudent] = useState(false);
-
+    const [showChart,setShowChart] =useState(true);
     const [sem, setSem] = useState({
         semester: '',
     });
@@ -32,6 +32,7 @@ export default function Students() {
     };
     const onStudentClick =(student)=>{
         setStudent(student);
+        setShowChart(!showChart);
     };
     return (
         <>
@@ -48,9 +49,9 @@ export default function Students() {
                   </div>
                 </div>
                 <label>
-                    Subject:
+                    Semester :
                   <select name="semester" value={sem.semester} onChange={handleChange}>
-                      <option value="">Select Subject</option>
+                      <option value="">Select Semester</option>
                       <option value="1">1</option>
                       <option value="2">2</option>
                       <option value="3">3</option>
@@ -64,7 +65,9 @@ export default function Students() {
                 <Verified onItemClick={onStudentClick} sem={sem.semester}/>
               </div>
               <div className="info-diagram">
-                <StudentDetails student={student} />
+                <h2>Analytics</h2>
+                { showChart ?<PieChartComponent/>:
+                <StudentDetails student={student} />}
               </div>
             </div>
             <div className="div2">
@@ -79,9 +82,12 @@ export default function Students() {
                && <div>
                     <StudentAcademicDetails studentId={selectedStudent.id}/>
                     <StudentNonAcademics studentId={selectedStudent.id}/>
-                  </div>:<AddStudent/>} 
+                  </div>:<AddStudent/>}
+              <Link className="logout" to="/"><button className="siginin-body">LOG OUT</button></Link>
             </div>
+            
           </div>
+          
         </>
     );
 }

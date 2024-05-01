@@ -40,8 +40,10 @@ const AddStudentForm = () => {
                     address: ''
                 });
                 console.log(formData);
+                alert("Student added successfully");
             } else {
                 console.error('Failed to add student.');
+                alert("Falied to add student");
             }
         } catch (error) {
             console.error('Error adding student:', error);

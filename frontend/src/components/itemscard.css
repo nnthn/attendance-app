@@ -1,0 +1,59 @@
+.items-card{
+    background-color: white;
+    padding: 0rem 2rem;
+    border-radius: .8rem;
+    display: flex;
+    justify-content: space-between;
+    margin-top: .5rem;
+    background-color: white;
+    border: solid #EEEEEE;
+    border-radius: .8rem;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 7px 12px;
+}
+.items-name{
+    font-weight: normal;
+}
+.items-heading{
+    display: flex;
+    justify-content: space-between;
+    padding:0  4rem;
+}
+.dia-container{
+    display: flex;
+    flex-direction: column;
+}
+.chart{
+    display: flex;
+    justify-content: center;
+}
+.item-list-container{
+    overflow-y: scroll;
+    height: 24vh;
+    padding: .5rem 2rem;
+}
+.logout{
+    justify-self: flex-end;
+}
+.student-login{
+    height: 80vh;
+    margin: 2rem;
+    display: flex;
+    flex-direction: column;
+}
+.std-ip{
+    display: flex;
+    justify-content: space-between;
+}
+.academic-container{
+    display: flex;
+    flex-direction: column;
+}
+.form{
+    margin-top: 2rem;
+}
+td{
+    padding: 3rem;
+}
+.inpt{
+    display: flex;
+}

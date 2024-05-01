@@ -25,10 +25,12 @@ function StudentNonAcademicsDetails(props) {
                 }
 
                 const data = await response.json();
-                setNonAcademicsDetails(data.data); // Extracting the data array from the response
+                setNonAcademicsDetails(data.data); 
             } catch (error) {
                 console.error('Error fetching student non-academics details:', error);
-                setError('Failed to fetch student non-academics details');
+                setError('');
+                setNonAcademicsDetails(''); 
+                
             } finally {
                 setIsLoading(false);
             }

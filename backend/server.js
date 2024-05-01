@@ -38,6 +38,37 @@ db.connect((err)=>{
 
 });
 
+// API endpoint to fetch data from test1 and test2 based on studentId
+app.post('/fetchTestData', (req, res) => {
+    const { studentId } = req.body;
+
+    // Fetch data from test1
+    db.query('SELECT * FROM test1 WHERE studentId = ?', [studentId], (err, test1Data) => {
+        if (err) {
+            console.error('Error fetching data from test1:', err);
+            res.status(500).json({ error: 'Error fetching data from test1' });
+            return;
+        }
+
+        // Fetch data from test2
+        db.query('SELECT * FROM test2 WHERE studentId = ?', [studentId], (err, test2Data) => {
+            if (err) {
+                console.error('Error fetching data from test2:', err);
+                res.status(500).json({ error: 'Error fetching data from test2' });
+                return;
+            }
+
+            // Combine test1 and test2 data
+            const testData = {
+                test1: test1Data,
+                test2: test2Data
+            };
+
+            // Send the combined data as the response
+            res.json(testData);
+        });
+    });
+});
 
 // Middleware to authenticate token
 function authenticateToken(req, res, next) {
@@ -90,6 +121,10 @@ app.post('/addStudent', async (req, res) => {
         const insertUserQuery = 'INSERT INTO users (userName, password, adminRole) VALUES (?, ?, ?)';
         const userResult = await db.promise().query(insertUserQuery, [firstName, lastName, 0]);
         res.status(201).json({ message: 'Student added successfully', studentId });
+
+	const insertVerificationQuery = 'INSERT INTO verification (studentId, verified) VALUES (?, ?)';
+        await db.promise().query(insertVerificationQuery, [studentId, 1]);
+
     } catch (error) {
         console.error('Error adding student:', error);
         res.status(500).json({ error: 'Error adding student' });
@@ -277,6 +312,35 @@ app.post('/markAttendance', (req, res) => {
 	}
   });
 });
+// Route for fetching subject average marks
+app.post('/subjectAverageMarks', async (req, res) => {
+  try {
+    // Query to calculate average marks for each subject
+    const query = `
+      SELECT subject, AVG(totalMark) AS averageMark
+      FROM (
+        SELECT subject, totalMark FROM test1
+        UNION ALL
+        SELECT subject, totalMark FROM test2
+      ) AS combined
+      GROUP BY subject
+    `;
+    db.query(query, (err, result) => {
+      if (err) {
+        console.error('Error calculating average marks for each subject:', err);
+        return res.status(500).json({ error: 'Error calculating average marks for each subject' });
+      }
+
+      console.log('Subject average marks:', result); // Debugging: Log subject data
+
+      res.status(200).json(result);
+    });
+  } catch (error) {
+    console.error('Error calculating subject average marks:', error);
+    res.status(500).json({ error: 'Error calculating subject average marks' });
+  }
+});
+
 // Signup Endpoint
 app.post('/signup', async (req, res) => {
     console.log(req.body);

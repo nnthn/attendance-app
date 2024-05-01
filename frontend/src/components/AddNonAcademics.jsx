@@ -49,9 +49,10 @@ export default function AddNonAcademics(props) {
             <h2>Add Non-Academics Details</h2>
             <form onSubmit={handleSubmit}>
                 <br />
-                <label>
+                <label className="form">
                     Program:
-                    <input
+                  <input
+                    className="input academic-grade inpt"
                         type="text"
                         name="program"
                         value={formData.program}
@@ -61,7 +62,8 @@ export default function AddNonAcademics(props) {
                 <br />
                 <label>
                     Organization:
-                    <input
+                  <input
+                    className="input academic-grade inpt"
                         type="text"
                         name="organization"
                         value={formData.organization}
@@ -71,7 +73,8 @@ export default function AddNonAcademics(props) {
                 <br />
                 <label>
                     Duration:
-                    <input
+                  <input
+                    className="input academic-grade inpt"
                         type="text"
                         name="duration"
                         value={formData.duration}
