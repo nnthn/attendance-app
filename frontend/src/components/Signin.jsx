@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { decodeJwt } from './utils'; // Import the decodeJwt function
 import Template from './Template'; // Import the Template component
-
+import img from '../assets/mbits.svg';
 import "./signin.css";
 
 export default function Signin() {
@@ -53,6 +53,7 @@ export default function Signin() {
                 }
             } else {
                 console.error('Login failed.');
+                alert('Login Failed');
             }
         } catch (error) {
             console.error('Error during login:', error);
@@ -81,6 +82,7 @@ export default function Signin() {
                         onChange={handleInputChange}
                     />
                 </div>
+              <img src={img} alt="logo" className="logo-img"/>
                 <div className="buttons">
                   <button onClick={handleSubmit}>LOG IN</button>
                 </div>

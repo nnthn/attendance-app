@@ -9,9 +9,22 @@
 .Navbar{
     height: 6rem;
     display: flex;
+    justify-content: space-between;
     padding-left: 2rem;
     align-items: center;
     border-bottom: solid #EEEEEE;
+}
+.logo{
+    width: 4rem;
+    margin-right: 3rem;
+    margin-left: 1rem;
+}
+.logo-img{
+    width: 5rem;
+    height: 5rem;
+}
+.logo-grp{
+    display: flex;
 }
 .signin-container{
     display: flex;
@@ -63,12 +76,12 @@ align-items: center;
 .studentsContainer{
     width: 50vw;
     overflow-y: scroll;
-    height: 50vh;
+    height: 60vh;
     padding: 2rem;
     scrollbar-width:none;
 }
 .admin-info > .studentsContainer{
-    height: 38vh;
+    height: 55vh;
 }
 .attendance-card{
     display: flex;
