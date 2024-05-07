@@ -1,0 +1,10 @@
+.buttons{
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.buttons > a{
+    color: skyblue;
+    margin-top: 1rem;
+}

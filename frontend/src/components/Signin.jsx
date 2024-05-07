@@ -62,7 +62,8 @@ export default function Signin() {
 
     return (
         <div className="signin-container">
-            <div className="signin-card">
+          <div className="signin-card">
+                          <img src={img} alt="logo" className="logo-img"/>
                 <div className="text-container">
                     <h2>SRAS</h2>
                     <input
@@ -82,9 +83,11 @@ export default function Signin() {
                         onChange={handleInputChange}
                     />
                 </div>
-              <img src={img} alt="logo" className="logo-img"/>
-                <div className="buttons">
-                  <button onClick={handleSubmit}>LOG IN</button>
+            
+            <div className="buttons">
+ 
+              <button onClick={handleSubmit}>LOG IN</button>
+
                 </div>
             </div>
         </div>
